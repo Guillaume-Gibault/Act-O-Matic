@@ -84,7 +84,7 @@ ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
 # endregion
 
-class gui(ctk.CTk):  # GUI
+class Gui(ctk.CTk):  # GUI
     # Callbacks
     # region
     def btn_clbk_path_image(self):  # Callback Widget
@@ -140,21 +140,27 @@ class gui(ctk.CTk):  # GUI
         # region
         self.frm_sidebar = ctk.CTkFrame(self)
         self.lbl_title = ctk.CTkLabel(self.frm_sidebar, text=PROGRAM_NAME + " " + VERSION, font=("Helvetica", 20))
-        self.frm_path_image = ctk.CTkFrame(self.frm_sidebar)
+        self.frm_settings = ctk.CTkFrame(self.frm_sidebar)
+        self.lbl_settings = ctk.CTkLabel(self.frm_settings, text="Settings", font=("Helvetica", 16), justify="left")
+        self.frm_path_image = ctk.CTkFrame(self.frm_settings)
         self.lbl_path_image = ctk.CTkLabel(self.frm_path_image, text="Image file:")
         self.ntry_path_image = ctk.CTkEntry(self.frm_path_image, placeholder_text="Image file path", state="disabled")
         self.btn_path_image = ctk.CTkButton(self.frm_path_image, text="Select image file", command=self.btn_clbk_path_image)
+        self.btn_launch = ctk.CTkButton(self.frm_settings, text="Launch", command=self.btn_clbk_launch)
         self.frm_main = ctk.CTkFrame(self)
         # endregion
 
         # Packs
         # region
-        self.frm_sidebar.pack(side="left", fill="both", expand=True)
+        self.frm_sidebar.pack(side="left", fill="both", expand=False)
         self.lbl_title.pack(side="top", fill="x", expand=True)
+        self.frm_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
+        self.lbl_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.frm_path_image.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.lbl_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
         self.ntry_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
         self.btn_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.btn_launch.pack(side="bottom", padx=10, pady=10, fill="x", expand=True)
         self.frm_main.pack(side="right", fill="both", expand=True)
         # endregion
 
@@ -194,6 +200,6 @@ def execution():
     print("Execution completed.")
 
 if __name__ == "__main__":
-    app = gui()
+    app = Gui()
     app.mainloop()
     sys.exit()
