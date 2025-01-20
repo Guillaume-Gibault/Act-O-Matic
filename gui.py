@@ -196,7 +196,7 @@ class Gui(ctk.CTk):  # GUI
         # Packs
         # region
         self.frm_sidebar.pack(side="left", fill="both", expand=False)
-        self.lbl_title.pack(side="top", fill="x", expand=True)
+        self.lbl_title.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.frm_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.lbl_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.frm_path_image.pack(side="top", padx=10, pady=10, fill="x", expand=True)
