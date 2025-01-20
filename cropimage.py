@@ -58,6 +58,6 @@ def process_folder(input_dir, output_dir, face_cascade_path="haarcascade_frontal
 
 
 # Exemple d'utilisation
-input_dir = r"C:\Users\33658\Downloads\DataSet\test2classes\Tom Hanks"
-output_dir = r"C:\Users\33658\Documents\Tom Hanks Crop"
+input_dir = r"C:\Users\33658\Downloads\DataSet\test\Sandra Bullock"
+output_dir = r"C:\Users\33658\Documents\Sandra Bullock Crop"
 process_folder(input_dir, output_dir)
