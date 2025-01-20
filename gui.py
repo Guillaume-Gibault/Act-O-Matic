@@ -131,7 +131,7 @@ class Gui(ctk.CTk):  # GUI
                 print(f"Erreur lors du chargement de l'image : {e}")
         else:
             print("No file selected.")
-            self.img_main.create_image(image=None)
+            self.img_main.delete("all")
             path_image = ""
         self.ntry_path_image.configure(state="normal", placeholder_text=path_image)
         self.ntry_path_image.configure(state="disabled")
