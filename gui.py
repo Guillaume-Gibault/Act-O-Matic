@@ -164,9 +164,9 @@ class Gui(ctk.CTk):  # GUI
 
         # Configuration de la fenêtre
         # region
-        self.geometry("1200x650")
+        self.geometry("1000x375")
         self.resizable(True, True)
-        self.minsize(700, 500)
+        self.minsize(800, 350)
         self.title(PROGRAM_NAME + " " + VERSION)
         self.iconbitmap("polytech.ico")
         #self.iconbitmap(default=os.path.join(application_path, "polytech.ico"))
