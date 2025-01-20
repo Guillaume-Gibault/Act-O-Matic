@@ -6,9 +6,12 @@ import os
 import tkinter as tk
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
+from PIL import Image, ImageTk
+
+
 # endregion
 
-# Horodatage/log des print
+# Horodatage des print
 # region
 class TimestampedStream:
     def __init__(self, stream):
@@ -90,13 +93,46 @@ class Gui(ctk.CTk):  # GUI
     def btn_clbk_path_image(self):  # Callback Widget
         print("Image file selection window openned.")
         global path_image
-        # png and jpeg
         path_image = tk.filedialog.askopenfilename(title="Select a file...", filetypes=(("Image file", "*.png *.jpeg *.jpg"),))
         if path_image:
-            print('Image file: "', path_image, '" selected.', sep="")
+            print(f'Image file: "{path_image}" selected.')
+            try:
+                # Charger l'image avec PIL
+                original_image = Image.open(path_image)
+
+                # Dimensions de l'image originale
+                original_width, original_height = original_image.size
+
+                # Dimensions du Canvas
+                canvas_width = self.img_main.winfo_width() or 300
+                canvas_height = self.img_main.winfo_height() or 300
+
+                # Calcul du ratio d'aspect
+                width_ratio = canvas_width / original_width
+                height_ratio = canvas_height / original_height
+                scaling_factor = min(width_ratio, height_ratio)
+
+                # Nouvelles dimensions
+                new_width = int(original_width * scaling_factor)
+                new_height = int(original_height * scaling_factor)
+
+                # Redimensionner l'image
+                resized_image = original_image.resize((new_width, new_height), Image.LANCZOS)
+
+                # Convertir l'image pour Canvas
+                canvas_image = ImageTk.PhotoImage(resized_image)
+
+                # Afficher l'image dans le Canvas, centrée
+                self.img_main.image = canvas_image  # Empêche le garbage collection
+                x_offset = (canvas_width - new_width) // 2
+                y_offset = (canvas_height - new_height) // 2
+                self.img_main.create_image(x_offset, y_offset, anchor="nw", image=canvas_image)
+            except Exception as e:
+                print(f"Erreur lors du chargement de l'image : {e}")
         else:
             print("No file selected.")
-            pathParameters = ""
+            self.img_main.delete("all")
+            path_image = ""
         self.ntry_path_image.configure(state="normal", placeholder_text=path_image)
         self.ntry_path_image.configure(state="disabled")
 
@@ -128,9 +164,9 @@ class Gui(ctk.CTk):  # GUI
 
         # Configuration de la fenêtre
         # region
-        self.geometry("1200x650")
+        self.geometry("1000x375")
         self.resizable(True, True)
-        self.minsize(700, 500)
+        self.minsize(800, 350)
         self.title(PROGRAM_NAME + " " + VERSION)
         self.iconbitmap("polytech.ico")
         #self.iconbitmap(default=os.path.join(application_path, "polytech.ico"))
@@ -147,13 +183,20 @@ class Gui(ctk.CTk):  # GUI
         self.ntry_path_image = ctk.CTkEntry(self.frm_path_image, placeholder_text="Image file path", state="disabled")
         self.btn_path_image = ctk.CTkButton(self.frm_path_image, text="Select image file", command=self.btn_clbk_path_image)
         self.btn_launch = ctk.CTkButton(self.frm_settings, text="Launch", command=self.btn_clbk_launch)
+        self.frm_result = ctk.CTkFrame(self.frm_sidebar)
+        self.lbl_result = ctk.CTkLabel(self.frm_result, text="Result", font=("Helvetica", 16), justify="left")
+        self.lbl_result_actor = ctk.CTkLabel(self.frm_result, text="Actor: ", justify="left")
+        self.ntry_result_actor = ctk.CTkEntry(self.frm_result, placeholder_text="Actor", state="disabled")
+        self.lbl_result_age = ctk.CTkLabel(self.frm_result, text="Age: ", justify="left")
+        self.ntry_result_age = ctk.CTkEntry(self.frm_result, placeholder_text="Age", state="disabled")
         self.frm_main = ctk.CTkFrame(self)
+        self.img_main = ctk.CTkCanvas(self.frm_main, width=1000, height=1000)
         # endregion
 
         # Packs
         # region
         self.frm_sidebar.pack(side="left", fill="both", expand=False)
-        self.lbl_title.pack(side="top", fill="x", expand=True)
+        self.lbl_title.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.frm_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.lbl_settings.pack(side="top", padx=10, pady=10, fill="x", expand=True)
         self.frm_path_image.pack(side="top", padx=10, pady=10, fill="x", expand=True)
@@ -161,7 +204,14 @@ class Gui(ctk.CTk):  # GUI
         self.ntry_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
         self.btn_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
         self.btn_launch.pack(side="bottom", padx=10, pady=10, fill="x", expand=True)
+        self.frm_result.pack(side="top", padx=10, pady=10, fill="x", expand=True)
+        self.lbl_result.pack(side="top", padx=10, pady=10, fill="x", expand=True)
+        self.lbl_result_actor.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.ntry_result_actor.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.lbl_result_age.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.ntry_result_age.pack(side="left", padx=10, pady=10, fill="x", expand=True)
         self.frm_main.pack(side="right", fill="both", expand=True)
+        self.img_main.pack(side="top", fill="both", expand=True)
         # endregion
 
         # Fin de l'initialisation
@@ -195,9 +245,10 @@ class Gui(ctk.CTk):  # GUI
         print("Initialization completed.")
         # endregion
 
-def execution():
-    print("Execution started.")
-    print("Execution completed.")
+    @staticmethod
+    def execution():
+        print("Execution started.")
+        print("Execution completed.")
 
 if __name__ == "__main__":
     app = Gui()
