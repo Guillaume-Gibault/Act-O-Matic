@@ -46,6 +46,11 @@ class TimestampedStream:
                     self.file.close()
             self.new_line = True
 
+    def flush(self):
+        self.stream.flush()
+        if self.log:
+            self.file.flush()
+
 sys.stdout = TimestampedStream(sys.stdout)
 # endregion
 
@@ -123,55 +128,64 @@ class gui(ctk.CTk):  # GUI
 
         # Configuration de la fenêtre
         # region
-        self.geometry("900x515")
+        self.geometry("1200x650")
         self.resizable(True, True)
-        self.minsize(650, 515)
+        self.minsize(700, 500)
         self.title(PROGRAM_NAME + " " + VERSION)
-        self.iconbitmap(default=os.path.join(application_path, "polytech.ico"))
+        self.iconbitmap("polytech.ico")
+        #self.iconbitmap(default=os.path.join(application_path, "polytech.ico"))
         # endregion
 
         # Widgets
         # region
-
+        self.frm_sidebar = ctk.CTkFrame(self)
+        self.lbl_title = ctk.CTkLabel(self.frm_sidebar, text=PROGRAM_NAME + " " + VERSION, font=("Helvetica", 20))
+        self.frm_path_image = ctk.CTkFrame(self.frm_sidebar)
+        self.lbl_path_image = ctk.CTkLabel(self.frm_path_image, text="Image file:")
+        self.ntry_path_image = ctk.CTkEntry(self.frm_path_image, placeholder_text="Image file path", state="disabled")
+        self.btn_path_image = ctk.CTkButton(self.frm_path_image, text="Select image file", command=self.btn_clbk_path_image)
+        self.frm_main = ctk.CTkFrame(self)
         # endregion
 
         # Packs
         # region
-
+        self.frm_sidebar.pack(side="left", fill="both", expand=True)
+        self.lbl_title.pack(side="top", fill="x", expand=True)
+        self.frm_path_image.pack(side="top", padx=10, pady=10, fill="x", expand=True)
+        self.lbl_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.ntry_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.btn_path_image.pack(side="left", padx=10, pady=10, fill="x", expand=True)
+        self.frm_main.pack(side="right", fill="both", expand=True)
         # endregion
 
         # Fin de l'initialisation
         # region
-        print("""
-                ***** **               ***                                                     *       
-             ******  ****               ***                       *                          **        
-            **   *  *  ***               **                      **                          **        
-           *    *  *    ***              **                      **                          **        
-               *  *      **    ****      **    **   ****       ********                      **        
-              ** **      **   * ***  *   **     **    ***  *  ********     ***       ****    **  ***   
-              ** **      **  *   ****    **     **     ****      **       * ***     * ***  * ** * ***  
-            **** **      *  **    **     **     **      **       **      *   ***   *   ****  ***   *** 
-           * *** **     *   **    **     **     **      **       **     **    *** **         **     ** 
-              ** *******    **    **     **     **      **       **     ********  **         **     ** 
-              ** ******     **    **     **     **      **       **     *******   **         **     ** 
-              ** **         **    **     **     **      **       **     **        **         **     ** 
-              ** **          ******      **      *********       **     ****    * ***     *  **     ** 
-              ** **           ****       *** *     **** ***       **     *******   *******   **     ** 
-         **   ** **                       ***            ***              *****     *****     **    ** 
-        ***   *  *                                *****   ***                                       *  
-         ***    *                               ********  **                                       *   
-          ******                               *      ****                                        *    
-            ***                                                                                  *     
-        """)
-        print('''
-        MMP"""""""MM            dP            MMP"""""YMM          M"""""`'"""`YM            dP   oo          
-        M' .mmmm  MM            88            M' .mmm. `M          M  mm.  mm.  M            88               
-        M         `M .d8888b. d8888P          M  MMMMM  M          M  MMM  MMM  M .d8888b. d8888P dP .d8888b. 
-        M  MMMMM  MM 88'  `""   88   88888888 M  MMMMM  M 88888888 M  MMM  MMM  M 88'  `88   88   88 88'  `"" 
-        M  MMMMM  MM 88.  ...   88            M. `MMM' .M          M  MMM  MMM  M 88.  .88   88   88 88.  ... 
-        M  MMMMM  MM `88888P'   dP            MMb     dMM          M  MMM  MMM  M `88888P8   dP   dP `88888P' 
-        MMMMMMMMMMMM                          MMMMMMMMMMM          MMMMMMMMMMMMMM                             
-        ''')
+        print("""        ***** **               ***                                                     *      """)
+        print("""     ******  ****               ***                       *                          **       """)
+        print("""    **   *  *  ***               **                      **                          **       """)
+        print("""   *    *  *    ***              **                      **                          **       """)
+        print("""       *  *      **    ****      **    **   ****       ********                      **       """)
+        print("""      ** **      **   * ***  *   **     **    ***  *  ********     ***       ****    **  ***  """)
+        print("""      ** **      **  *   ****    **     **     ****      **       * ***     * ***  * ** * *** """)
+        print("""    **** **      *  **    **     **     **      **       **      *   ***   *   ****  ***   ***""")
+        print("""   * *** **     *   **    **     **     **      **       **     **    *** **         **     **""")
+        print("""      ** *******    **    **     **     **      **       **     ********  **         **     **""")
+        print("""      ** ******     **    **     **     **      **       **     *******   **         **     **""")
+        print("""      ** **         **    **     **     **      **       **     **        **         **     **""")
+        print("""      ** **          ******      **      *********       **     ****    * ***     *  **     **""")
+        print("""      ** **           ****       *** *     **** ***       **     *******   *******   **     **""")
+        print(""" **   ** **                       ***            ***              *****     *****     **    **""")
+        print("""***   *  *                                *****   ***                                       * """)
+        print(""" ***    *                               ********  **                                       *  """)
+        print("""  ******                               *      ****                                        *   """)
+        print("""    ***                                                                                  *    """)
+        print('''MMP"""""""MM            dP            MMP"""""YMM          M"""""`'"""`YM            dP   oo          ''')
+        print('''M' .mmmm  MM            88            M' .mmm. `M          M  mm.  mm.  M            88               ''')
+        print('''M         `M .d8888b. d8888P          M  MMMMM  M          M  MMM  MMM  M .d8888b. d8888P dP .d8888b. ''')
+        print('''M  MMMMM  MM 88'  `""   88   88888888 M  MMMMM  M 88888888 M  MMM  MMM  M 88'  `88   88   88 88'  `"" ''')
+        print('''M  MMMMM  MM 88.  ...   88            M. `MMM' .M          M  MMM  MMM  M 88.  .88   88   88 88.  ... ''')
+        print('''M  MMMMM  MM `88888P'   dP            MMb     dMM          M  MMM  MMM  M `88888P8   dP   dP `88888P' ''')
+        print('''MMMMMMMMMMMM                          MMMMMMMMMMM          MMMMMMMMMMMMMM                             ''')
         print("Initialization completed.")
         # endregion
 
