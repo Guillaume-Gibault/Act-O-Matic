@@ -160,6 +160,7 @@ class Gui(ctk.CTk):  # GUI
         # Lancement de l'exécution si tout OK
         # region
         self.btn_launch.configure(state="disabled")
+        self.update()
         self.execution()
         self.btn_launch.configure(state="normal")
         # endregion
@@ -261,7 +262,7 @@ class Gui(ctk.CTk):  # GUI
         predicted_class, confidence = predict_image(self.path_image, self.model)
         print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
-        print(f"Execution completed in {datetime.now() - start_time}.")
+        print(f"Execution completed in {f'{(datetime.now() - start_time).seconds % 60} sec' if (datetime.now() - start_time).total_seconds() < 60 else f'{(datetime.now() - start_time).seconds // 60 % 60} min {(datetime.now() - start_time).seconds % 60} sec' if (datetime.now() - start_time).total_seconds() < 3600 else f'{(datetime.now() - start_time).seconds // 3600} h {(datetime.now() - start_time).seconds // 60 % 60} min'}")
 
 if __name__ == "__main__":
     app = Gui()
