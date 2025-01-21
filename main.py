@@ -138,6 +138,7 @@ class Gui(ctk.CTk):  # GUI
 
                 # Convertir le tableau numpy en image PIL
                 cropped_image = Image.fromarray(cv2.cvtColor(cropped_face, cv2.COLOR_BGR2RGB))
+                self.cropped_image = cropped_image
 
                 # Dimensions de l'image originale
                 original_width, original_height = cropped_image.size
@@ -172,6 +173,7 @@ class Gui(ctk.CTk):  # GUI
             print("No file selected.")
             self.img_main.delete("all")
             self.path_image = ""
+            self.cropped_image = None
         self.ntry_path_image.configure(state="normal", placeholder_text=self.path_image)
         self.ntry_path_image.configure(state="disabled")
 
@@ -201,6 +203,7 @@ class Gui(ctk.CTk):  # GUI
         # region
         super().__init__()
         self.path_image = r""
+        self.cropped_image = None
         self.model = keras.models.load_model(PATH_MODEL)  # Charger le modèle Keras
         # endregion
 
@@ -289,7 +292,7 @@ class Gui(ctk.CTk):  # GUI
     def execution(self):
         start_time = datetime.now()
         print("Execution started.")
-        predicted_class, confidence = predict_image(self.path_image, self.model)
+        predicted_class, confidence = predict_image(self.cropped_image, self.model)
         print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
         print(f"Execution completed in {((datetime.now() - start_time).seconds % 60)} sec {(datetime.now() - start_time).microseconds // 1000} ms")
