@@ -85,6 +85,32 @@ def msg_box(category, message, icon, log=True):
     msgbox = CTkMessagebox(title=PROGRAM_NAME + " " + VERSION, message=message, icon=icon)
     msgbox.get()  # Tant que l'utilisateur ne valide/ferme pas la messagebox
 
+def crop_image(image_path):
+    # Charger le modèle de détection de visage Haarcascade
+    face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+    # Charger l'image
+    image = cv2.imread(image_path)
+    if image is None:
+        raise Exception("Error: Unable to load image.")
+
+    # Convertir l'image en niveaux de gris
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Détecter les visages
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+
+    if len(faces) == 0:
+        raise Exception("No face detected.")
+
+    # Récupérer les coordonnées du premier visage détecté
+    x, y, w, h = faces[0]
+
+    # Détourer le visage
+    cropped_face = image[y:y+h, x:x+w]
+
+    return cropped_face
+
 def predict_image(image_path, model):
     img = keras.preprocessing.image.load_img(image_path, target_size=IMAGE_SIZE)
     img_array = np.expand_dims(keras.preprocessing.image.img_to_array(img)/255.0, axis=0)
@@ -107,11 +133,14 @@ class Gui(ctk.CTk):  # GUI
         if self.path_image:
             print(f'Image file: "{self.path_image}" selected.')
             try:
-                # Charger l'image avec PIL
-                original_image = Image.open(self.path_image)
+                # Détecter et découper le visage
+                cropped_face = crop_image(self.path_image)
+
+                # Convertir le tableau numpy en image PIL
+                cropped_image = Image.fromarray(cv2.cvtColor(cropped_face, cv2.COLOR_BGR2RGB))
 
                 # Dimensions de l'image originale
-                original_width, original_height = original_image.size
+                original_width, original_height = cropped_image.size
 
                 # Dimensions du Canvas
                 canvas_width = self.img_main.winfo_width() or 300
@@ -127,7 +156,7 @@ class Gui(ctk.CTk):  # GUI
                 new_height = int(original_height * scaling_factor)
 
                 # Redimensionner l'image
-                resized_image = original_image.resize((new_width, new_height), Image.LANCZOS)
+                resized_image = cropped_image.resize((new_width, new_height), Image.LANCZOS)
 
                 # Convertir l'image pour Canvas
                 canvas_image = ImageTk.PhotoImage(resized_image)
@@ -138,7 +167,7 @@ class Gui(ctk.CTk):  # GUI
                 y_offset = (canvas_height - new_height) // 2
                 self.img_main.create_image(x_offset, y_offset, anchor="nw", image=canvas_image)
             except Exception as e:
-                print(f"Erreur lors du chargement de l'image : {e}")
+                msg_box("Error", f"Error while loading image: {e}", "cancel")
         else:
             print("No file selected.")
             self.img_main.delete("all")
