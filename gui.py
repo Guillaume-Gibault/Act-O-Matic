@@ -259,7 +259,7 @@ class Gui(ctk.CTk):  # GUI
         start_time = datetime.now()
         print("Execution started.")
         predicted_class, confidence = predict_image(self.path_image, self.model)
-        print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence:.2f}")
+        print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
         print(f"Execution completed in {datetime.now() - start_time}.")
 
