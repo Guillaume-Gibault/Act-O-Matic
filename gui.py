@@ -5,10 +5,10 @@ import sys
 import os
 import tkinter as tk
 import customtkinter as ctk
+import numpy as np
 from CTkMessagebox import CTkMessagebox
 from PIL import Image, ImageTk
-
-
+from tensorflow import keras
 # endregion
 
 # Horodatage des print
@@ -69,7 +69,11 @@ elif __file__:
 # region
 PROGRAM_NAME = "Act-O-Matic"
 VERSION = "v1.0.0"
-path_image = r""
+# PATH_ICON = os.path.join(application_path, "polytech.ico")
+PATH_ICON = "polytech.ico"
+PATH_MODEL = "actor_recognition_model_night.keras"
+MODEL_CLASSES = ['Brad Pitt', 'Hugh Jackman', 'Johnny Depp', 'Leonardo DiCaprio', 'Natalie Portman', 'Robert Downey Jr', 'Tom Cruise', 'Tom Hanks', 'Will Smith']
+IMAGE_SIZE = (224, 224)
 # endregion
 
 # Fonctions
@@ -79,6 +83,12 @@ def msg_box(category, message, icon, log=True):
         print(f"{category}: {message}")
     msgbox = CTkMessagebox(title=PROGRAM_NAME + " " + VERSION, message=message, icon=icon)
     msgbox.get()  # Tant que l'utilisateur ne valide/ferme pas la messagebox
+
+def predict_image(image_path, model):
+    img = keras.preprocessing.image.load_img(image_path, target_size=IMAGE_SIZE)
+    img_array = np.expand_dims(keras.preprocessing.image.img_to_array(img)/255.0, axis=0)
+    predictions = model.predict(img_array)
+    return np.argmax(predictions), predictions[0][np.argmax(predictions)]  # Prediction et confiance
 # endregion
 
 # R�glages g�n�raux du programme
@@ -92,13 +102,12 @@ class Gui(ctk.CTk):  # GUI
     # region
     def btn_clbk_path_image(self):  # Callback Widget
         print("Image file selection window openned.")
-        global path_image
-        path_image = tk.filedialog.askopenfilename(title="Select a file...", filetypes=(("Image file", "*.png *.jpeg *.jpg"),))
-        if path_image:
-            print(f'Image file: "{path_image}" selected.')
+        self.path_image = tk.filedialog.askopenfilename(title="Select a file...", filetypes=(("Image file", "*.png *.jpeg *.jpg"),))
+        if self.path_image:
+            print(f'Image file: "{self.path_image}" selected.')
             try:
                 # Charger l'image avec PIL
-                original_image = Image.open(path_image)
+                original_image = Image.open(self.path_image)
 
                 # Dimensions de l'image originale
                 original_width, original_height = original_image.size
@@ -132,8 +141,8 @@ class Gui(ctk.CTk):  # GUI
         else:
             print("No file selected.")
             self.img_main.delete("all")
-            path_image = ""
-        self.ntry_path_image.configure(state="normal", placeholder_text=path_image)
+            self.path_image = ""
+        self.ntry_path_image.configure(state="normal", placeholder_text=self.path_image)
         self.ntry_path_image.configure(state="disabled")
 
     def btn_clbk_launch(self):  # Callback Widget
@@ -143,7 +152,7 @@ class Gui(ctk.CTk):  # GUI
 
         # Protections pré-exécution
         # region
-        if path_image == "":
+        if self.path_image == "":
             msg_box("Error", 'No image file selected! Please select an image file.', "cancel")
             return
         # endregion
@@ -160,6 +169,8 @@ class Gui(ctk.CTk):  # GUI
         # Globals et variables
         # region
         super().__init__()
+        self.path_image = r""
+        self.model = keras.models.load_model(PATH_MODEL)  # Charger le modèle Keras
         # endregion
 
         # Configuration de la fenêtre
@@ -168,8 +179,7 @@ class Gui(ctk.CTk):  # GUI
         self.resizable(True, True)
         self.minsize(800, 350)
         self.title(PROGRAM_NAME + " " + VERSION)
-        self.iconbitmap("polytech.ico")
-        #self.iconbitmap(default=os.path.join(application_path, "polytech.ico"))
+        self.iconbitmap(PATH_ICON)
         # endregion
 
         # Widgets
@@ -245,9 +255,11 @@ class Gui(ctk.CTk):  # GUI
         print("Initialization completed.")
         # endregion
 
-    @staticmethod
-    def execution():
+    def execution(self):
         print("Execution started.")
+        predicted_class, confidence = predict_image(self.path_image, self.model)
+        print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence:.2f}")
+        self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
         print("Execution completed.")
 
 if __name__ == "__main__":
