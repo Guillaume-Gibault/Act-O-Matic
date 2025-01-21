@@ -1,12 +1,12 @@
 # Imports
 # region
-import datetime
 import sys
 import os
 import tkinter as tk
 import customtkinter as ctk
 import numpy as np
 from CTkMessagebox import CTkMessagebox
+from datetime import datetime
 from PIL import Image, ImageTk
 from tensorflow import keras
 # endregion
@@ -24,7 +24,7 @@ class TimestampedStream:
     def write(self, text):
         text = text.encode("utf-8", errors="replace").decode("utf-8")  # Décodage unicode
         if text != '\n':
-            timestamp = datetime.datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+            timestamp = datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
             if self.new_line:
                 self.stream.write(f"{timestamp} {text}")
                 if self.log:
@@ -256,11 +256,12 @@ class Gui(ctk.CTk):  # GUI
         # endregion
 
     def execution(self):
+        start_time = datetime.now()
         print("Execution started.")
         predicted_class, confidence = predict_image(self.path_image, self.model)
-        print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence:.2f}")
+        print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
-        print("Execution completed.")
+        print(f"Execution completed in {datetime.now() - start_time}.")
 
 if __name__ == "__main__":
     app = Gui()
