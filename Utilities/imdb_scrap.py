@@ -22,11 +22,19 @@ class ImdbScrape:
             "Natalie Portman": {
                 "url": "https://www.imdb.com/fr/name/nm0000204/",
                 "birth_date": 1981,
-            }
+            },
+            "Will Smith": {
+                "url": "https://www.imdb.com/fr/name/nm0000226/",
+                "birth_date": 1968,
+            },
+            "Brad Pitt": {
+                "url": "https://www.imdb.com/fr/name/nm0000093/",
+                "birth_date": 1963,
+            },
         }
 
     def scrape(self):
-        data = np.array([])
+        output = np.array(["Actor", "Image", "Title", "Age"])
         cookies_declined = False  # Init
         for actor in self.actors:
             self.driver.get(self.actors[actor]["url"])
@@ -62,7 +70,8 @@ class ImdbScrape:
                     if match:
                         title = match.group(1)
                         age = int(match.group(2)) - int(self.actors[actor]["birth_date"])
-                        np.append(data, [actor, i, title, age])
+                        output = np.vstack([output, [actor, i, title, age]])
+                        np.savetxt("../Datasets/IMDB Scrap/Index.csv", output, fmt="%s", delimiter=";")
                         print(f"{actor} ({(i/nb_total_images)*100:.2f}%) - Image and metadata {i}/{nb_total_images} saved")
                     else:
                         os.remove(image_path)
@@ -76,7 +85,7 @@ class ImdbScrape:
                 ActionChains(self.driver).move_to_element(next_button).perform()           # Move mouse to avoid button diseapearing
                 self.driver.execute_script("arguments[0].click();", next_button)
 
-        np.savetxt("../Datasets/IMDB Scrap/imdb_scrap.csv", data, delimiter=",", fmt="%s", header="Actor,Title,Age")
+        np.savetxt("../Datasets/IMDB Scrap/Index.csv", output, fmt="%s", delimiter=";")
         print("Scraping done!")
 
     def close(self):
