@@ -24,8 +24,8 @@ def update_csv(csv_path, images_folder, output_csv):
 
 
 # Utilisation
-csv_path = "Lien du csv de base"
-images_folder = "Lien du fichier qui contient les images"
-output_csv = "lien ou crer nouveau fichier"
+csv_path = r"C:\Users\33658\PycharmProjects\Act-O-Matic\Datasets\FaceCropAge\Will Smith Crop\index.csv"
+images_folder = r"C:\Users\33658\PycharmProjects\Act-O-Matic\Datasets\FaceCropAge\Will Smith Crop"
+output_csv = r"C:\Users\33658\PycharmProjects\Act-O-Matic\Datasets\FaceCropAge\Will Smith Crop\index_cleaned.csv"
 
 update_csv(csv_path, images_folder, output_csv)
