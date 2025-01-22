@@ -57,5 +57,5 @@ def process_folder(input_dir, output_dir, face_cascade_path="haarcascade_frontal
 
 # Exemple d'utilisation
 input_dir = r"C:\Users\33658\PycharmProjects\Act-O-Matic\Datasets\IMDB Scrap\Will Smith"
-output_dir = r"/Datasets/FaceCropAge/Will Smith Crop"
+output_dir = r"/Datasets/Face Crop Age/Will Smith Crop"
 process_folder(input_dir, output_dir)
