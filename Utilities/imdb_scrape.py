@@ -58,7 +58,7 @@ class ImdbScrape:
                             file.write(chunk)
                     og_description = self.driver.find_element(By.XPATH, "//meta[@property='og:description']")
                     og_description = og_description.get_attribute("content")
-                    match = re.search(r'in (.+) \((\d{4})\)', og_description)
+                    match = re.search(r'(?:in|at an event for) (.+) \((\d{4})\)', og_description)
                     if match:
                         title = match.group(1)
                         age = int(match.group(2)) - int(self.actors[actor]["birth_date"])
@@ -76,7 +76,6 @@ class ImdbScrape:
                 ActionChains(self.driver).move_to_element(next_button).perform()           # Move mouse to avoid button diseapearing
                 self.driver.execute_script("arguments[0].click();", next_button)
 
-        # Export to csv
         np.savetxt("../Datasets/IMDB Scrap/imdb_scrap.csv", data, delimiter=",", fmt="%s", header="Actor,Title,Age")
         print("Scraping done!")
 
