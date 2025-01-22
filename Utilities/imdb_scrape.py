@@ -62,7 +62,7 @@ class ImdbScrape:
                     if match:
                         title = match.group(1)
                         age = int(match.group(2)) - int(self.actors[actor]["birth_date"])
-                        np.append(data, [actor, title, age])
+                        np.append(data, [actor, i, title, age])
                         print(f"{actor} ({(i/nb_total_images)*100:.2f}%) - Image and metadata {i}/{nb_total_images} saved")
                     else:
                         os.remove(image_path)
