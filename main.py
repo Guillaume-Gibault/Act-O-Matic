@@ -77,7 +77,7 @@ PATH_ACTOR_MODEL = "Models/actor_recognition_model_update.keras"
 PATH_AGE_MODEL_PITT = "Models/age_estimation_model_pitt.keras"
 PATH_AGE_MODEL_CRUISE = "Models/age_estimation_model_cruise.keras"
 PATH_AGE_MODEL_SMITH = "Models/age_estimation_model_smith.keras"
-PATH_AGE_MODEL_PORTMAN = "Models/age_estimation_model_portman.keras"
+PATH_AGE_MODEL_PORTMAN = "Models/age_estimation_model_portman.h5"
 MODEL_CLASSES = ['Brad Pitt', 'Hugh Jackman', 'Johnny Depp', 'Leonardo DiCaprio', 'Natalie Portman', 'Robert Downey Jr', 'Tom Cruise', 'Tom Hanks', 'Will Smith']
 IMAGE_SIZE = (224, 224)
 # endregion
