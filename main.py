@@ -306,7 +306,7 @@ class Gui(ctk.CTk):  # GUI
         else:  # Si Brad Pitt
             predicted_age, _ = predict_image(self.image, self.age_model_pitt, regression=True)
             print(f"Predicted age: {predicted_age:.2f}")
-            self.ntry_result_age.configure(state="normal", placeholder_text=str(predicted_class))
+            self.ntry_result_age.configure(state="normal", placeholder_text=str(predicted_age))
             self.ntry_result_age.configure(state="disabled")
         print(f"Execution completed in {((datetime.now() - start_time).seconds % 60)} sec {(datetime.now() - start_time).microseconds // 1000} ms")
 
