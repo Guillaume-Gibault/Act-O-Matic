@@ -73,7 +73,7 @@ VERSION = "v1.0.0"
 # PATH_ICON = os.path.join(application_path, "polytech.ico")
 PATH_ICON = "polytech.ico"
 PATH_ACTOR_MODEL = "Models/actor_recognition_model_update.keras"
-PATH_AGE_MODEL_PITT = "Models/age_estimation_model_brad.h5"
+PATH_AGE_MODEL_PITT = "Models/age_estimation_model_brad.keras"
 MODEL_CLASSES = ['Brad Pitt', 'Hugh Jackman', 'Johnny Depp', 'Leonardo DiCaprio', 'Natalie Portman', 'Robert Downey Jr', 'Tom Cruise', 'Tom Hanks', 'Will Smith']
 IMAGE_SIZE = (224, 224)
 # endregion
