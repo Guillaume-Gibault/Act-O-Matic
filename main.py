@@ -76,6 +76,7 @@ PATH_ICON = "polytech.ico"
 PATH_ACTOR_MODEL = "Models/actor_recognition_model_update.keras"
 PATH_AGE_MODEL_PITT = "Models/age_estimation_model_pitt.keras"
 PATH_AGE_MODEL_CRUISE = "Models/age_estimation_model_cruise.keras"
+PATH_AGE_MODEL_SMITH = "Models/age_estimation_model_smith.keras"
 MODEL_CLASSES = ['Brad Pitt', 'Hugh Jackman', 'Johnny Depp', 'Leonardo DiCaprio', 'Natalie Portman', 'Robert Downey Jr', 'Tom Cruise', 'Tom Hanks', 'Will Smith']
 IMAGE_SIZE = (224, 224)
 # endregion
@@ -211,6 +212,7 @@ class Gui(ctk.CTk):  # GUI
         self.actor_model = keras.models.load_model(PATH_ACTOR_MODEL)  # Charger le modèle Keras
         self.age_model_pitt = keras.models.load_model(PATH_AGE_MODEL_PITT)  # Charger le modèle Keras
         self.age_model_cruise = keras.models.load_model(PATH_AGE_MODEL_CRUISE)  # Charger le modèle Keras
+        self.age_model_smith = keras.models.load_model(PATH_AGE_MODEL_SMITH)
         # endregion
 
         # Configuration de la fenêtre
@@ -302,12 +304,17 @@ class Gui(ctk.CTk):  # GUI
         print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
         self.ntry_result_actor.configure(state="disabled")
-        if MODEL_CLASSES[predicted_class].strip() != "Brad Pitt" or MODEL_CLASSES[predicted_class].strip() != "Tom Cruise":  # Si pas Brad Pitt ou Tom Cruise
+        if MODEL_CLASSES[predicted_class].strip() not in ["Brad Pitt", "Tom Cruise", "Will Smith"]:  # Si pas Brad Pitt ou Tom Cruise ou Will Smith
             print("Age estimation skipped: not applicable.")
             self.ntry_result_age.configure(state="normal", placeholder_text="N/A")
             self.ntry_result_age.configure(state="disabled")
-        else:  # Si Brad Pitt ou Tom Cruise
-            predicted_age, _ = predict_image(self.image, self.age_model_pitt, regression=True) if MODEL_CLASSES[predicted_class].strip() == "Brad Pitt" else predict_image(self.image, self.age_model_cruise, regression=True)
+        else:  # Si Brad Pitt ou Tom Cruise ou Will Smith
+            if MODEL_CLASSES[predicted_class].strip() == "Brad Pitt":
+                predicted_age, _ = predict_image(self.image, self.age_model_pitt, regression=True)
+            elif MODEL_CLASSES[predicted_class].strip() == "Tom Cruise":
+                predicted_age, _ = predict_image(self.image, self.age_model_cruise, regression=True)
+            else:
+                predicted_age, _ = predict_image(self.image, self.age_model_smith, regression=True)
             print(f"Predicted age: {predicted_age:.2f}")
             self.ntry_result_age.configure(state="normal", placeholder_text=str(int(predicted_age)))
             self.ntry_result_age.configure(state="disabled")
