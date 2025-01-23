@@ -7,4 +7,4 @@ M  MMMMM  MM 88.  ...   88            M. `MMM' .M          M  MMM  MMM  M 88.  .
 M  MMMMM  MM `88888P'   dP            MMb     dMM          M  MMM  MMM  M `88888P8   dP   dP `88888P'
 MMMMMMMMMMMM                          MMMMMMMMMMM          MMMMMMMMMMMMMM                            
 ```
-GIBAULT - FERNANDEZ - DESRUMEAUX - MAHUHAN
+GIBAULT - FERNANDEZ - DESRUMEAUX - MAHUAN
