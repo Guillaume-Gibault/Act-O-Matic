@@ -10,7 +10,6 @@ from CTkMessagebox import CTkMessagebox
 from datetime import datetime
 from PIL import Image, ImageTk
 from tensorflow import keras
-
 # endregion
 
 # Horodatage des print
