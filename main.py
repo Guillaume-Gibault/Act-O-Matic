@@ -72,7 +72,8 @@ PROGRAM_NAME = "Act-O-Matic"
 VERSION = "v1.0.0"
 # PATH_ICON = os.path.join(application_path, "polytech.ico")
 PATH_ICON = "polytech.ico"
-PATH_MODEL = "Models/actor_recognition_model_update.keras"
+PATH_ACTOR_MODEL = "Models/actor_recognition_model_update.keras"
+PATH_AGE_MODEL_PITT = "Models/age_estimation_model_brad.h5"
 MODEL_CLASSES = ['Brad Pitt', 'Hugh Jackman', 'Johnny Depp', 'Leonardo DiCaprio', 'Natalie Portman', 'Robert Downey Jr', 'Tom Cruise', 'Tom Hanks', 'Will Smith']
 IMAGE_SIZE = (224, 224)
 # endregion
@@ -111,9 +112,12 @@ def crop_image(image_path):
 
     return cropped_face
 
-def predict_image(img_array, model):
+def predict_image(img_array, model, regression=False):
     predictions = model.predict(img_array)
-    return np.argmax(predictions), predictions[0][np.argmax(predictions)]  # Prediction et confiance
+    if regression:
+        return predictions[0][0], 1.0
+    else:
+        return np.argmax(predictions), predictions[0][np.argmax(predictions)]
 # endregion
 
 # R�glages g�n�raux du programme
@@ -202,7 +206,8 @@ class Gui(ctk.CTk):  # GUI
         super().__init__()
         self.path_image = r""
         self.image = None
-        self.model = keras.models.load_model(PATH_MODEL)  # Charger le modèle Keras
+        self.actor_model = keras.models.load_model(PATH_ACTOR_MODEL)  # Charger le modèle Keras
+        self.age_model_pitt = keras.models.load_model(PATH_AGE_MODEL_PITT)  # Charger le modèle Keras
         # endregion
 
         # Configuration de la fenêtre
@@ -290,9 +295,19 @@ class Gui(ctk.CTk):  # GUI
     def execution(self):
         start_time = datetime.now()
         print("Execution started.")
-        predicted_class, confidence = predict_image(self.image, self.model)
+        predicted_class, confidence = predict_image(self.image, self.actor_model)
         print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
+        self.ntry_result_actor.configure(state="disabled")
+        if predicted_class != 0:  # Si pas Brad Pitt
+            print("Age estimation skipped: not applicable.")
+            self.ntry_result_age.configure(state="normal", placeholder_text="N/A")
+            self.ntry_result_age.configure(state="disabled")
+        else:  # Si Brad Pitt
+            predicted_age, _ = predict_image(self.image, self.age_model_pitt, regression=True)
+            print(f"Predicted age: {predicted_age:.2f}")
+            self.ntry_result_age.configure(state="normal", placeholder_text=str(predicted_class))
+            self.ntry_result_age.configure(state="disabled")
         print(f"Execution completed in {((datetime.now() - start_time).seconds % 60)} sec {(datetime.now() - start_time).microseconds // 1000} ms")
 
 if __name__ == "__main__":

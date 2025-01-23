@@ -21,7 +21,7 @@ class ImdbScrape:
                 "url": "https://www.imdb.com/fr/name/nm0000204/",
                 "birth_date": 1981,
             },
-            "Will Smith": {
+            "Will Smith Crop": {
                 "url": "https://www.imdb.com/fr/name/nm0000226/",
                 "birth_date": 1968,
             },
