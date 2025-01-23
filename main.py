@@ -299,11 +299,11 @@ class Gui(ctk.CTk):  # GUI
         print(f"Predicted actor: {MODEL_CLASSES[predicted_class]}, confidence: {confidence*100:.2f}%")
         self.ntry_result_actor.configure(state="normal", placeholder_text=MODEL_CLASSES[predicted_class])
         self.ntry_result_actor.configure(state="disabled")
-        if predicted_class != 0:
+        if predicted_class != 0:  # Si pas Brad Pitt
             print("Age estimation skipped: not applicable.")
             self.ntry_result_age.configure(state="normal", placeholder_text="N/A")
             self.ntry_result_age.configure(state="disabled")
-        else:
+        else:  # Si Brad Pitt
             predicted_age, _ = predict_image(self.image, self.age_model_pitt, regression=True)
             print(f"Predicted age: {predicted_age:.2f}")
             self.ntry_result_age.configure(state="normal", placeholder_text=str(predicted_class))
